@@ -29,12 +29,12 @@ def Coins():
 
     print("Change:")
     if NumOfFifty > 0:
-        print (NumOfFifty, "coins of 50 kop")
+        print (NumOfFifty, "coins of 50 kop.")
     if NumOfTen > 0:
-        print(NumOfTen, "coins of 10 kop")
+        print(NumOfTen, "coins of 10 kop.")
     if NumOfFive > 0:
-        print(NumOfFive, "coins of 5 kop")
+        print(NumOfFive, "coins of 5 kop.")
     if NumOfOne > 0 :
-        print(NumOfOne, "coins of 1 kop")
+        print(NumOfOne, "coins of 1 kop.")
 
 Coins()
