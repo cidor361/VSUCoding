@@ -14,7 +14,7 @@ def Coins():
     NumOfFive = 0
     NumOfOne = 0
 
-    while  Change > 49:
+    while Change > 49:
         Change -= 50
         NumOfFifty += 1
     while Change > 9:
