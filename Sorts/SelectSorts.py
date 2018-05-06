@@ -5,9 +5,9 @@ def SelectSort(array):
             if array[j] < array[MinNum]:
                 MinNum = j
         array[i], array[MinNum] = array[MinNum], array[i]
+    print(array)
 
 array = [7, 9, 5, 4]
 
 SelectSort(array)
 
-print(array)
