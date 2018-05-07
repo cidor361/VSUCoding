@@ -23,9 +23,7 @@ def Coins():
     while Change > 4:
         Change -= 5
         NumOfFive += 1
-    while Change > 0:
-        Change -= 1
-        NumOfOne += 1
+    NumOfOne = Change
 
     print("Change:")
     if NumOfFifty > 0:
