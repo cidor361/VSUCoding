@@ -2,7 +2,7 @@
 import copy
 from PIL import Image
 import re
-
+убботу около
 scr_x = 800  # Ширина картинки
 scr_y = scr_x  # Высота картинки
 
