@@ -1,8 +1,7 @@
-# -*- coding: utf-8 -*-
 import copy
 from PIL import Image
 import re
-убботу около
+
 scr_x = 800  # Ширина картинки
 scr_y = scr_x  # Высота картинки
 
@@ -87,7 +86,7 @@ def show_face():
     screen = Screen(scr_x, scr_y)
     for line in lines.split('\n'):
         try:
-            v, x, y, z = re.split('\s+', line)
+            v, z, y, x = re.split('\s+', line)
         except ValueError:
             continue
         if v == 'v':
@@ -96,7 +95,7 @@ def show_face():
             z = float(z) + 1
             points.append((x, y, z))
         if v == 'vt':
-            u = float(x) * texture_img.width
+            u = float(z) * texture_img.width
             v = (1 - float(y)) * texture_img.height
             textures.append((u, v))
         if v == 'f':
