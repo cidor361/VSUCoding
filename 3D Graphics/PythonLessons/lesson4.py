@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import math
+
 from PIL import Image
 import re
 
@@ -73,6 +75,15 @@ class Point(object):
         return Point(self.screen, self.x, self.y, self.z)
 
 
+def rotate(angle, first_coord, second_coord):           # функция основанная на матрице поворотов (угол поворота, первая ось, вторая ось)
+    angle = math.radians(angle)                         # ось поворота не указывается
+    first_coord = float(first_coord)
+    second_coord = float(second_coord)
+    first = first_coord * math.cos(angle) - second_coord * math.sin(angle)
+    second = first_coord * math.sin(angle) + second_coord * math.cos(angle)
+    return first, second
+
+
 def show_face():
     half_scr_x = int(scr_x/2)
     half_scr_y = int(scr_y/2)
@@ -86,6 +97,7 @@ def show_face():
         except ValueError:
             continue
         if v == 'v':
+            x, z = rotate(30, x, z)             # собственно сам поворот
             x = int((float(x) + 1) * half_scr_x)
             y = int((float(y) + 1) * half_scr_y)
             z = float(z) + 1

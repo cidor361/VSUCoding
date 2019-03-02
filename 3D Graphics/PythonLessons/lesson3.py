@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import math
 import random
 from PIL import Image
 import re
@@ -15,14 +16,14 @@ class Point(object):
         self.y = y
 
     def show(self, color=None):
-        canvas[self.x, scr_y-self.y] = color or (255, 255, 255)
+        canvas[self.x, scr_y - self.y] = color or (255, 255, 255)
 
     def copy(self):
         return Point(self.x, self.y)
 
 
 def zero_div(a, b):
-    return float(a)/b if b else 0
+    return float(a) / b if b else 0
 
 
 def triangle(coords, color):
@@ -48,6 +49,16 @@ def triangle(coords, color):
             p2.x += delta_p2
         delta_p1 = zero_div((c.x - b.x), (c.y - b.y))
 
+
+def rotate(angle, first_coord, second_coord):           # функция основанная на матрице поворотов (угол поворота, первая ось, вторая ось)
+    angle = math.radians(angle)                         # ось поворота не указывается
+    first_coord = float(first_coord)
+    second_coord = float(second_coord)
+    first = first_coord * math.cos(angle) - second_coord * math.sin(angle)
+    second = first_coord * math.sin(angle) + second_coord * math.cos(angle)
+    return first, second
+
+
 half_scr_x = int(scr_x / 2)
 half_scr_y = int(scr_y / 2)
 f = open('face.obj', 'r')
@@ -59,12 +70,12 @@ for line in lines.split('\n'):
     except:
         continue
     if v == 'v':
+        x, z = rotate(139, x, z)             # собственно сам поворот
         x = int((float(x) + 1) * half_scr_x)
         y = int((float(y) + 1) * half_scr_y)
         points.append(Point(x, y))
     if v == 'f':
         color = tuple([random.randint(0, 255)] * 3)
-        triangle([points[int(i.split('/')[0])-1] for i in (x, y, z)], color)
+        triangle([points[int(i.split('/')[0]) - 1] for i in (x, y, z)], color)
 
 img.show()
-

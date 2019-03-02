@@ -1,6 +1,10 @@
 import copy
+import math
+
 from PIL import Image
 import re
+
+# import math
 
 scr_x = 800  # Ширина картинки
 scr_y = scr_x  # Высота картинки
@@ -23,7 +27,8 @@ class Screen(object):
         p1, p2 = a.copy(), a.copy()
         height = c.y - a.y
         delta_x2 = float(c.x - a.x) / height
-        deltas = lambda i, j, divider: [float(i.z-j.z)/divider, float(i.u-j.u)/divider, float(i.v-j.v)/divider]
+        deltas = lambda i, j, divider: [float(i.z - j.z) / divider, float(i.u - j.u) / divider,
+                                        float(i.v - j.v) / divider]
         delta_z2, delta_u2, delta_v2 = deltas(c, a, height)
         for p in (b, c):
             height = (p.y - p1.y) or 1
@@ -54,7 +59,7 @@ class Point(object):
         if self.z <= screen.z_buffer[y][x]:
             return
         screen.z_buffer[y][x] = self.z
-        screen.canvas[x, screen.height-y] = color or (255, 255, 255)
+        screen.canvas[x, screen.height - y] = color or (255, 255, 255)
 
     def copy(self):
         return copy.copy(self)
@@ -74,9 +79,18 @@ class TexturePoint(Point):
         self.v += v
 
 
+def rotate(angle, first_coord, second_coord):           # функция основанная на матрице поворотов (угол поворота, первая ось, вторая ось)
+    angle = math.radians(angle)                         # ось поворота не указывается
+    first_coord = float(first_coord)
+    second_coord = float(second_coord)
+    first = first_coord * math.cos(angle) - second_coord * math.sin(angle)
+    second = first_coord * math.sin(angle) + second_coord * math.cos(angle)
+    return first, second
+
+
 def show_face():
-    half_scr_x = int(scr_x/2)
-    half_scr_y = int(scr_y/2)
+    half_scr_x = int(scr_x / 2)
+    half_scr_y = int(scr_y / 2)
     texture_img = Image.open('african_head_diffuse.tga')
     texture = texture_img.load()
     f = open('face.obj', 'r')
@@ -86,25 +100,27 @@ def show_face():
     screen = Screen(scr_x, scr_y)
     for line in lines.split('\n'):
         try:
-            v, z, y, x = re.split('\s+', line)
+            v, x, y, z = re.split('\s+', line)
         except ValueError:
             continue
         if v == 'v':
+            x, z = rotate(30, x, z)             # собственно сам поворот
             x = int((float(x) + 1) * half_scr_x)
             y = int((float(y) + 1) * half_scr_y)
             z = float(z) + 1
             points.append((x, y, z))
         if v == 'vt':
-            u = float(z) * texture_img.width
+            u = float(x) * texture_img.width
             v = (1 - float(y)) * texture_img.height
             textures.append((u, v))
         if v == 'f':
-            indexes = [[int(j)-1 for j in i.split('/')] for i in (x, y, z)]
+            indexes = [[int(j) - 1 for j in i.split('/')] for i in (x, y, z)]
             tr_points = []
             for i in range(3):
                 params = points[indexes[i][0]] + textures[indexes[i][1]]
                 tr_points.append(screen.point(*params))
             screen.triangle(tr_points, texture)
     screen.img.show()
+
 
 show_face()
