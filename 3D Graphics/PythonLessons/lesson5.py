@@ -1,10 +1,8 @@
 import copy
 import math
-
+from pynput import mouse
 from PIL import Image
 import re
-
-# import math
 
 scr_x = 800  # Ширина картинки
 scr_y = scr_x  # Высота картинки
@@ -79,8 +77,9 @@ class TexturePoint(Point):
         self.v += v
 
 
-def rotate(angle, first_coord, second_coord):           # функция основанная на матрице поворотов (угол поворота, первая ось, вторая ось)
-    angle = math.radians(angle)                         # ось поворота не указывается
+def rotate(angle, first_coord,
+           second_coord):  # функция основанная на матрице поворотов (угол поворота, первая ось, вторая ось)
+    angle = math.radians(angle)  # ось поворота не указывается
     first_coord = float(first_coord)
     second_coord = float(second_coord)
     first = first_coord * math.cos(angle) - second_coord * math.sin(angle)
@@ -104,7 +103,7 @@ def show_face():
         except ValueError:
             continue
         if v == 'v':
-            x, z = rotate(30, x, z)             # собственно сам поворот
+            x, z = rotate(30, x, z)  # собственно сам поворот
             x = int((float(x) + 1) * half_scr_x)
             y = int((float(y) + 1) * half_scr_y)
             z = float(z) + 1
@@ -123,4 +122,32 @@ def show_face():
     screen.img.show()
 
 
-show_face()
+# show_face()
+
+
+def on_move(x, y):
+    print('Pointer moved to {0}'.format(
+        (x, y)))
+
+
+def on_click(x, y, button, pressed):
+    print('{0} at {1}'.format(
+        'Pressed' if pressed else 'Released',
+        (x, y)))
+    if not pressed:
+        # Stop listener
+        return False
+
+
+def on_scroll(x, y, dx, dy):
+    print('Scrolled {0} at {1}'.format(
+        'down' if dy < 0 else 'up',
+        (x, y)))
+
+
+# Collect events until released
+with mouse.Listener(
+        on_move=on_move,
+        on_click=on_click,
+        on_scroll=on_scroll) as listener:
+    listener.join()
