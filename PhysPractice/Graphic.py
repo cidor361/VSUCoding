@@ -1,6 +1,5 @@
 import re
 import matplotlib.pyplot as plt
-import numpy as np
 
 reg = re.compile('[^0-9.\s ]')
 
@@ -16,22 +15,13 @@ for i in range(len(array)):
         del array[i]
         k = 0
         for k in range(num_of_path):
-            array.append([subarray[k*2], subarray[k*2-1]])
+            array.append([subarray[k * 2], subarray[k * 2 - 1]])
 
-if len(array) == 1:
-    array = array[0]
-    i = 0
-    for i in range(len(array) // 2):
-        x = array[i * 2]
-        y = array[i * 2 - 1]
-        x = float(x)
-        y = float(y)
-        plt.scatter(x, y)
-else:
-    i = 1
-    for i in range(len(array)):
-        x, y = array[i]
-        x = float(x)
-        y = float(y)
-        plt.scatter(x, y)
+i = 0
+for i in range(len(array)):
+    x, y = array[i]
+    x = float(x)
+    y = float(y)
+    plt.scatter(x, y)
+
 plt.show()
