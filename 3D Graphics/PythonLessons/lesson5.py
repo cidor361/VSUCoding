@@ -87,7 +87,7 @@ def rotate(angle, first_coord,
     return first, second
 
 
-def show_face():
+def show_face(angle):
     half_scr_x = int(scr_x / 2)
     half_scr_y = int(scr_y / 2)
     texture_img = Image.open('african_head_diffuse.tga')
@@ -103,7 +103,7 @@ def show_face():
         except ValueError:
             continue
         if v == 'v':
-            x, z = rotate(30, x, z)  # собственно сам поворот
+            x, z = rotate(angle, x, z)  # собственно сам поворот
             x = int((float(x) + 1) * half_scr_x)
             y = int((float(y) + 1) * half_scr_y)
             z = float(z) + 1
@@ -122,32 +122,32 @@ def show_face():
     screen.img.show()
 
 
-# show_face()
+show_face(45)
 
 
-def on_move(x, y):
-    print('Pointer moved to {0}'.format(
-        (x, y)))
-
-
-def on_click(x, y, button, pressed):
-    print('{0} at {1}'.format(
-        'Pressed' if pressed else 'Released',
-        (x, y)))
-    if not pressed:
-        # Stop listener
-        return False
-
-
-def on_scroll(x, y, dx, dy):
-    print('Scrolled {0} at {1}'.format(
-        'down' if dy < 0 else 'up',
-        (x, y)))
-
-
-# Collect events until released
-with mouse.Listener(
-        on_move=on_move,
-        on_click=on_click,
-        on_scroll=on_scroll) as listener:
-    listener.join()
+# def on_move(x, y):
+#     print('Pointer moved to {0}'.format(
+#         (x, y)))
+#
+#
+# def on_click(x, y, button, pressed):
+#     print('{0} at {1}'.format(
+#         'Pressed' if pressed else 'Released',
+#         (x, y)))
+#     if not pressed:
+#         # Stop listener
+#         return False
+#
+#
+# def on_scroll(x, y, dx, dy):
+#     print('Scrolled {0} at {1}'.format(
+#         'down' if dy < 0 else 'up',
+#         (x, y)))
+#
+#
+# # Collect events until released
+# with mouse.Listener(
+#         on_move=on_move,
+#         on_click=on_click,
+#         on_scroll=on_scroll) as listener:
+#     listener.join()
