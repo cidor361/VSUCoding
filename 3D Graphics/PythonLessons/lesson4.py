@@ -3,6 +3,7 @@ import math
 
 from PIL import Image
 import re
+from pynput import mouse
 
 scr_x = 800  # Ширина картинки
 scr_y = scr_x  # Высота картинки
@@ -105,5 +106,7 @@ def show_face():
         if v == 'f':
             screen.triangle([points[int(i.split('/')[0])-1] for i in (x, y, z)])
     screen.img.show()
+
+
 
 show_face()

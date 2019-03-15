@@ -1,6 +1,7 @@
 import copy
 import math
 from pynput import mouse
+import pygame
 from PIL import Image
 import re
 
@@ -119,35 +120,37 @@ def show_face(angle):
                 params = points[indexes[i][0]] + textures[indexes[i][1]]
                 tr_points.append(screen.point(*params))
             screen.triangle(tr_points, texture)
-    screen.img.show()
+    # screen.img.show()
+    return screen.img.copy()
 
 
-show_face(45)
+# show_face(45)
 
 
-# def on_move(x, y):
-#     print('Pointer moved to {0}'.format(
-#         (x, y)))
-#
-#
-# def on_click(x, y, button, pressed):
-#     print('{0} at {1}'.format(
-#         'Pressed' if pressed else 'Released',
-#         (x, y)))
-#     if not pressed:
-#         # Stop listener
-#         return False
-#
-#
-# def on_scroll(x, y, dx, dy):
-#     print('Scrolled {0} at {1}'.format(
-#         'down' if dy < 0 else 'up',
-#         (x, y)))
-#
-#
-# # Collect events until released
-# with mouse.Listener(
-#         on_move=on_move,
-#         on_click=on_click,
-#         on_scroll=on_scroll) as listener:
-#     listener.join()
+pygame.init()
+pygame.display.set_caption('Niger')
+pygame.mouse.set_visible(True)
+window = pygame.display.set_mode((scr_x, scr_y))
+window.fill((100, 150, 200))
+# img = pygame.image.load(show_face(45))
+# window.blit(img)
+pygame.display.update()
+pygame.mixer.init()
+x_pos = 0
+y_pos = 0
+left_b = 0
+right_b = 0
+r_b = 0
+while True:
+    for event in pygame.event.get():
+        pass
+    if right_b == 1:
+        if x_pos != pygame.mouse.get_pos()[0]:
+            angle = abs(pygame.mouse.get_pos()[0] - x_pos)
+    x_pos, y_pos = pygame.mouse.get_pos()
+    left_b, r_b, right_b = pygame.mouse.get_pressed()
+    if event.type == pygame.QUIT:
+        pygame.quit()
+        exit()
+pygame.mixer.quit()
+pygame.quite()
