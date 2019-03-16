@@ -121,10 +121,13 @@ def show_face(angle):
                 tr_points.append(screen.point(*params))
             screen.triangle(tr_points, texture)
     # screen.img.show()
-    return screen.img.copy()
+    # return screen.img.size
+    pix = screen.img.load()
+    return pix
 
 
 # show_face(45)
+# print(show_face(45))
 
 
 pygame.init()
@@ -132,8 +135,8 @@ pygame.display.set_caption('Niger')
 pygame.mouse.set_visible(True)
 window = pygame.display.set_mode((scr_x, scr_y))
 window.fill((100, 150, 200))
-# img = pygame.image.load(show_face(45))
-# window.blit(img)
+surf_array = show_face(45)
+pygame.surfarray.blit_array(surface, surf_array)
 pygame.display.update()
 pygame.mixer.init()
 x_pos = 0
