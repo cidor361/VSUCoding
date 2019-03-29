@@ -70,6 +70,8 @@ def main():
     while not glfw.window_should_close(window):
         glfw.poll_events()
 
+
+
         glClear(GL_COLOR_BUFFER_BIT)
 
         glDrawArrays(GL_TRIANGLES, 0, 3)

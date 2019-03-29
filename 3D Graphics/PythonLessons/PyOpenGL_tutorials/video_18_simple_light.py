@@ -89,7 +89,7 @@ def main():
     position = None
     position1 = 0
     position2 = 0
-    coef = 0.05
+    coef = -0.05
 
     while not glfw.window_should_close(window):
         glfw.poll_events()
@@ -104,7 +104,6 @@ def main():
                 else:
                     position = coef * glfw.get_cursor_pos(window)[0]
                 position1 = position
-            print(position, position1)
             rot_y = pyrr.Matrix44.from_y_rotation(position1 - position)
             position1 = coef * glfw.get_cursor_pos(window)[0]
             position2 = None
