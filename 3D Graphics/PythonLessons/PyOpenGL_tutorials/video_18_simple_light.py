@@ -6,18 +6,19 @@ import pyrr
 from PIL import Image
 from ObjLoader import *
 
+
 def window_resize(window, width, height):
     glViewport(0, 0, width, height)
 
-def main():
 
+def main():
     # initialize glfw
     if not glfw.init():
         return
 
     w_width, w_height = 800, 600
 
-    #glfw.window_hint(glfw.RESIZABLE, GL_FALSE)
+    # glfw.window_hint(glfw.RESIZABLE, GL_FALSE)
 
     window = glfw.create_window(w_width, w_height, "My OpenGL window", None, None)
 
@@ -31,8 +32,8 @@ def main():
     obj = ObjLoader()
     obj.load_model("res/face.obj")
 
-    texture_offset = len(obj.vertex_index)*12
-    normal_offset = (texture_offset + len(obj.texture_index)*8)
+    texture_offset = len(obj.vertex_index) * 12
+    normal_offset = (texture_offset + len(obj.texture_index) * 8)
 
     shader = ShaderLoader.compile_shader("shaders/video_18_vert.vs", "shaders/video_18_frag.fs")
 
@@ -40,13 +41,13 @@ def main():
     glBindBuffer(GL_ARRAY_BUFFER, VBO)
     glBufferData(GL_ARRAY_BUFFER, obj.model.itemsize * len(obj.model), obj.model, GL_STATIC_DRAW)
 
-    #positions
+    # positions
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, obj.model.itemsize * 3, ctypes.c_void_p(0))
     glEnableVertexAttribArray(0)
-    #textures
+    # textures
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, obj.model.itemsize * 2, ctypes.c_void_p(texture_offset))
     glEnableVertexAttribArray(1)
-    #normals
+    # normals
     glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, obj.model.itemsize * 3, ctypes.c_void_p(normal_offset))
     glEnableVertexAttribArray(2)
 
@@ -69,7 +70,7 @@ def main():
 
     glClearColor(0.2, 0.3, 0.2, 1.0)
     glEnable(GL_DEPTH_TEST)
-    #glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
+    # glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
 
     view = pyrr.matrix44.create_from_translation(pyrr.Vector3([0.0, 0.0, -3.0]))
     projection = pyrr.matrix44.create_perspective_projection_matrix(65.0, w_width / w_height, 0.1, 100.0)
@@ -88,22 +89,30 @@ def main():
     position = None
     position1 = 0
     position2 = 0
+    coef = 0.05
 
     while not glfw.window_should_close(window):
         glfw.poll_events()
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+        # rot_x = pyrr.Matrix44.from_x_rotation(0.5 * glfw.get_time() )
 
-        #rot_x = pyrr.Matrix44.from_x_rotation(0.5 * glfw.get_time() )
-
-        if(glfw.get_mouse_button(window,1)==1):
-            if (position == None):
-                position = int(glfw.get_cursor_pos(window)[0])
-            position1 = abs((0.001 * int(glfw.get_cursor_pos(window)[0])) - (position*0.001))
-            rot_y = pyrr.Matrix44.from_y_rotation(position1)
-            position2 = position1
+        if (glfw.get_mouse_button(window, 1) == 1):
+            if position is None:
+                if position2 is not None:
+                    position = coef * glfw.get_cursor_pos(window)[0] - position2
+                else:
+                    position = coef * glfw.get_cursor_pos(window)[0]
+                position1 = position
+            print(position, position1)
+            rot_y = pyrr.Matrix44.from_y_rotation(position1 - position)
+            position1 = coef * glfw.get_cursor_pos(window)[0]
+            position2 = None
         else:
+            if position2 is None:
+                position2 = position1 - position
             rot_y = pyrr.Matrix44.from_y_rotation(position2)
+            position = None
 
         glUniformMatrix4fv(transform_loc, 1, GL_FALSE, rot_y)
         glUniformMatrix4fv(light_loc, 1, GL_FALSE, rot_y)
@@ -113,6 +122,7 @@ def main():
         glfw.swap_buffers(window)
 
     glfw.terminate()
+
 
 if __name__ == "__main__":
     main()
