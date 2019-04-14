@@ -1,43 +1,5 @@
-import re
 import matplotlib.pyplot as plt
 import numpy as np
-
-# plt.scatter(x, y)
-
-# with open("data.txt") as file:
-#     array = [row.strip() for row in file]
-# for i in range(len(array)):
-#     array[i] = array[i].replace("(", "")
-#     array[i] = array[i].replace(")", "")
-
-# i = 0
-# for i in range(len(array)):
-#     # array[i] = reg.sub('', array[i]).split(' ')
-#     if array[i].count(' ') > 2:
-#         num_of_path = array[i].count(' ') // 2
-#         subarray = array[i]
-#         del array[i]
-#         k = 0
-#         for k in range(num_of_path):
-#             array.append([subarray[k * 2], subarray[k * 2 - 1]])
-# coordinates = []
-# i = 0
-# for i in range(len(array)):
-#     x, y = array[i]
-#     x = float(x)
-#     y = float(y)
-#     coordinate = [x, y]
-#     coordinates.append(coordinate)
-# plt.scatter(coordinates[i])
-# plt.plot(xt, yt)
-
-# x = np.arange(0.1, 4, 0.5)
-# y = np.exp(-x)
-# fig, ax = plt.subplots()
-# ax.errorbar(xt, yt, xerr=0.2, yerr=0.4)
-
-# plt.show()
-from scipy.interpolate import interp1d
 
 
 def cleanstring(string):
@@ -70,8 +32,22 @@ def cleanstring(string):
     string = string.replace("\\", "")
     string = string.replace("/", "")
     string = string.replace(",", "")
+    string = string.replace("\n", " ")
     string = string.strip(' ')
     return string
+
+
+def get_from_file(file, data):
+    for string in file:
+        string = cleanstring(string)
+        if string.count(' ') < 2:
+            x, y = string.split(' ')
+            x = float(x)
+            y = float(y)
+            data.append([x, y])
+        else:
+            data = get_from_string(string, data)
+    return data
 
 
 def get_from_string(string, data):
@@ -87,19 +63,6 @@ def get_from_string(string, data):
         del subdata[0]
         del subdata[0]
         data.append([x, y])
-    return data
-
-
-def get_from_file(file, data):
-    for string in file:
-        string = cleanstring(string)
-        if string.count(' ') < 2:
-            x, y = string.split(' ')
-            x = float(x)
-            y = float(y)
-            data.append([x, y])
-        else:
-            data = get_from_string(string, data)
     return data
 
 
@@ -119,7 +82,32 @@ def getdata():
     data = get_from_file(file, data)
     data.sort()
     x, y = cut_list(data)
-    f = interp1d(x, y)
+    print(x, y)
+    xx = np.array(x, dtype=float)
+    yy = np.array(y, dtype=float)
+    print(x, y)
+    return xx, yy
 
 
-getdata()
+def lagranz(x, y, t):
+    z = 0
+    for j in range(len(y)):
+        p1 = 1
+        p2 = 1
+        for i in range(len(x)):
+            if i == j:
+                p1 = p1 * 1
+                p2 = p2 * 1
+            else:
+                p1 = p1 * (t - x[i])
+                p2 = p2 * (x[j] - x[i])
+        z = z + y[j] * p1 / p2
+    return z
+
+
+x, y = getdata()
+xnew = np.linspace(np.min(x), np.max(x), 100)
+ynew = [lagranz(x, y, i) for i in xnew]
+plt.plot(x, y, 'o', xnew, ynew)
+plt.grid(True)
+plt.show()
