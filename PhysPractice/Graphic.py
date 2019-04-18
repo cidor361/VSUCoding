@@ -1,40 +1,15 @@
 import matplotlib.pyplot as plt
 import numpy as np
-
-
+from collections import OrderedDict
 def cleanstring(string):
-    string = string.replace("!", "")
-    string = string.replace("@", "")
-    string = string.replace("#", "")
-    string = string.replace("$", "")
-    string = string.replace("%", "")
-    string = string.replace("^", "")
-    string = string.replace("&", "")
-    string = string.replace("*", "")
     string = string.replace("(", "")
     string = string.replace(")", "")
-    string = string.replace("+", "")
-    string = string.replace("=", "")
-    string = string.replace("?", "")
-    string = string.replace("\'", "")
-    string = string.replace("\"", "")
-    string = string.replace("{", "")
-    string = string.replace("}", "")
-    string = string.replace("[", "")
-    string = string.replace("]", "")
-    string = string.replace("<", "")
-    string = string.replace(">", "")
-    string = string.replace("~", "")
-    string = string.replace("`", "")
-    string = string.replace(":", "")
-    string = string.replace(";", "")
-    string = string.replace("|", "")
-    string = string.replace("\\", "")
-    string = string.replace("/", "")
-    string = string.replace(",", "")
     string = string.replace("\n", " ")
     string = string.strip(' ')
     return string
+
+
+
 
 
 def get_from_file(file, data):
@@ -47,6 +22,7 @@ def get_from_file(file, data):
             data.append([x, y])
         else:
             data = get_from_string(string, data)
+        data = list(OrderedDict(data).items())
     return data
 
 
@@ -82,11 +58,7 @@ def getdata():
     data = get_from_file(file, data)
     data.sort()
     x, y = cut_list(data)
-    print(x, y)
-    xx = np.array(x, dtype=float)
-    yy = np.array(y, dtype=float)
-    print(x, y)
-    return xx, yy
+    return x, y
 
 
 def lagranz(x, y, t):
@@ -106,6 +78,11 @@ def lagranz(x, y, t):
 
 
 x, y = getdata()
+print(x, y)
+plt.scatter(x, y)
+
+# plt.plot(x, y)
+
 xnew = np.linspace(np.min(x), np.max(x), 100)
 ynew = [lagranz(x, y, i) for i in xnew]
 plt.plot(x, y, 'o', xnew, ynew)
