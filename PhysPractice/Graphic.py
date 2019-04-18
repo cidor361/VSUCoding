@@ -1,15 +1,14 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from collections import OrderedDict
+
+
 def cleanstring(string):
     string = string.replace("(", "")
     string = string.replace(")", "")
     string = string.replace("\n", " ")
     string = string.strip(' ')
     return string
-
-
-
 
 
 def get_from_file(file, data):
