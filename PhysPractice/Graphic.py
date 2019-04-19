@@ -1,9 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import scipy as sp
 from collections import OrderedDict
-
-
-
 
 
 def cleanstring(string):
@@ -12,9 +10,6 @@ def cleanstring(string):
     string = string.replace("\n", " ")
     string = string.strip(' ')
     return string
-
-
-
 
 
 def get_from_file(file, data):
@@ -82,7 +77,6 @@ def lagranz(x, y, t):
     return z
 
 
-
 def points():
     x, y = getdata()
     plt.scatter(x, y)
@@ -98,23 +92,22 @@ def interpolation():
     plt.show()
 
 
-
 def approximation():
     x, y = getdata()
-    n = len(x)  # количество элементов в списках
-    s = sum(y)  # сумма значений y
-    s1 = sum([1 / x[i] for i in range(0, n)])  # сумма 1/x
-    s2 = sum([(1 / x[i]) ** 2 for i in range(0, n)])  # сумма (1/x)**2
-    s3 = sum([y[i] / x[i] for i in range(0, n)])  # сумма y/x
-    a = round((s * s2 - s1 * s3) / (n * s2 - s1 ** 2), 3)  # коэфициент а с тремя дробными цифрами
-    b = round((n * s3 - s1 * s) / (n * s2 - s1 ** 2), 3)  # коэфициент b с тремя дробными цифрами
-    s4 = [a + b / x[i] for i in range(0, n)]  # список значений гиперболической функции
-    so = round(sum([abs(y[i] - s4[i]) for i in range(0, n)]) / (n * sum(y)) * 100, 3)  # средняя ошибка аппроксимации
-    plt.title('Аппроксимация гиперболой Y=' + str(a) + '+' + str(b) + '/x\n Средняя ошибка--' + str(so) + '%', size=14)
-    plt.xlabel('Координата X', size=14)
-    plt.ylabel('Координата Y', size=14)
-    plt.plot(x, y, color='r', linestyle=' ', marker='o', label='Data(x,y)')
-    plt.plot(x, s4, color='g', linewidth=2, label='Data(x,f(x)=a+b/x')
-    plt.legend(loc='best')
+    d = 2  # степень полинома
+    fp, residuals, rank, sv, rcond = sp.polyfit(x, y, d, full=True)  # Модель
+    f = sp.poly1d(fp)  # аппроксимирующая функция
+    print('Коэффициент -- a %s  ' % round(fp[0], 4))
+    print('Коэффициент-- b %s  ' % round(fp[1], 4))
+    print('Коэффициент -- c %s  ' % round(fp[2], 4))
+    y1 = [fp[0] * x[i] ** 2 + fp[1] * x[i] + fp[2] for i in range(0, len(x))]  # значения функции a*x**2+b*x+c
+    so = round(sum([abs(y[i] - y1[i]) for i in range(0, len(x))]) / (len(x) * sum(y)) * 100, 4)  # средняя ошибка
+    print('Average quadratic deviation ' + str(so))
+    fx = sp.linspace(x[0], x[-1] + 1, len(x))  # можно установить вместо len(x) большее число для интерполяции
+    plt.plot(x, y, 'o', label='Original data', markersize=10)
+    plt.plot(fx, f(fx), linewidth=2)
     plt.grid(True)
     plt.show()
+
+
+approximation()
