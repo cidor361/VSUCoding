@@ -1,9 +1,11 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from collections import OrderedDict
 import scipy as sp
-import matplotlib.pyplot as plt
+from collections import OrderedDict
+
+from numpy.linalg import linalg
 from scipy.optimize import fsolve
+
 
 def cleanstring(string):
     string = string.replace("(", "")
@@ -93,7 +95,7 @@ def interpolation():
     plt.show()
 
 
-def approximationG():
+def approximation():
     x, y = getdata()
     d = 2  # степень полинома
     fp, residuals, rank, sv, rcond = sp.polyfit(x, y, d, full=True)  # Модель
@@ -104,31 +106,48 @@ def approximationG():
     y1 = [fp[0] * x[i] ** 2 + fp[1] * x[i] + fp[2] for i in range(0, len(x))]  # значения функции a*x**2+b*x+c
     so = round(sum([abs(y[i] - y1[i]) for i in range(0, len(x))]) / (len(x) * sum(y)) * 100, 4)  # средняя ошибка
     print('Average quadratic deviation ' + str(so))
-    fx = sp.linspace(x[0], x[-1] + 1, len(x))  # можно установить вместо len(x) большее число для интерполяции
+    fx = sp.linspace(x[0], x[-1] + 1, len(x))  # можно установить вместо len(x) большее число для интерполяции\\
     plt.plot(x, y, 'o', label='Original data', markersize=10)
     plt.plot(fx, f(fx), linewidth=2)
     plt.grid(True)
     plt.show()
 
 
-def approximationGip():
+def aprox():
     x, y = getdata()
-    n = len(x)  # количество элементов в списках
-    s = sum(y)  # сумма значений y
-    s1 = sum([1 / x[i] for i in range(0, n)])  # сумма 1/x
-    s2 = sum([(1 / x[i]) ** 2 for i in range(0, n)])  # сумма (1/x)**2
-    s3 = sum([y[i] / x[i] for i in range(0, n)])  # сумма y/x
-    a = round((s * s2 - s1 * s3) / (n * s2 - s1 ** 2), 3)  # коэфициент а с тремя дробными цифрами
-    b = round((n * s3 - s1 * s) / (n * s2 - s1 ** 2), 3)  # коэфициент b с тремя дробными цифрами
-    s4 = [a + b / x[i] for i in range(0, n)]  # список значений гиперболической функции
-    so = round(sum([abs(y[i] - s4[i]) for i in range(0, n)]) / (n * sum(y)) * 100, 3)  # средняя ошибка аппроксимации
-    plt.title('Аппроксимация гиперболой Y=' + str(a) + '+' + str(b) + '/x\n Средняя ошибка--' + str(so) + '%', size=14)
-    plt.xlabel('Координата X', size=14)
-    plt.ylabel('Координата Y', size=14)
-    plt.plot(x, y, color='r', linestyle=' ', marker='o', label='Data(x,y)')
-    plt.plot(x, s4, color='g', linewidth=2, label='Data(x,f(x)=a+b/x')
-    plt.legend(loc='best')
-    plt.grid(True)
+    # настраиваем детали отрисовки графиков
+    plt.figure(figsize=(8, 6))
+    plt.title("Installations")
+    plt.xlabel("Days")
+    plt.ylabel("Installations")
+    # plt.xticks([...], [...]) # можно назначить свои тики
+    plt.autoscale(tight=True)
+
+    # рисуем исходные точки
+    plt.scatter(x, y)
+
+    legend = []
+    # аргументы для построения графиков моделей: исходный интервал + 60 дней
+    fx = sp.linspace(x[0], x[-1] + 60, 1000)
+    for d in range(1, 6):
+        # получаем параметры модели для полинома степени d
+        fp, residuals, rank, sv, rcond = sp.polyfit(x, y, d, full=True)
+        # print("Параметры модели: %s" % fp1)
+        # функция-полином, если её напечатать, то увидите математическое выражение
+        f = sp.poly1d(fp)
+        # print(f)
+        # рисуем график модельной функции
+        plt.plot(fx, f(fx), linewidth=2)
+        legend.append("d=%i" % f.order)
+        f2 = f - 1000  # из полинома можно вычитать
+        t = fsolve(f2, x[-1])  # ищем решение уравнения f2(x)=0, отплясывая от точки x[-1]
+        print("Полином %d-й степени:" % f.order)
+        print("- Мы достигнем 1000 установок через %d дней" % (t[0] - x[-1]))
+        print("- Через 60 дней у нас будет %d установок" % f(x[-1] + 60))
+    plt.legend(legend, loc="upper left")
+    plt.grid()
+    plt.savefig('data.png', dpi=50)
     plt.show()
 
 
+approximation()
