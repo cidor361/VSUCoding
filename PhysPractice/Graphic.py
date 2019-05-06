@@ -95,17 +95,17 @@ def interpolation():
     plt.show()
 
 
-def approximation():
+def approximation(d):
     x, y = getdata()
-    d = 2  # степень полинома
+    # d степень полинома
     fp, residuals, rank, sv, rcond = sp.polyfit(x, y, d, full=True)  # Модель
     f = sp.poly1d(fp)  # аппроксимирующая функция
-    print('Коэффициент -- a %s  ' % round(fp[0], 4))
-    print('Коэффициент-- b %s  ' % round(fp[1], 4))
-    print('Коэффициент -- c %s  ' % round(fp[2], 4))
-    y1 = [fp[0] * x[i] ** 2 + fp[1] * x[i] + fp[2] for i in range(0, len(x))]  # значения функции a*x**2+b*x+c
-    so = round(sum([abs(y[i] - y1[i]) for i in range(0, len(x))]) / (len(x) * sum(y)) * 100, 4)  # средняя ошибка
-    print('Average quadratic deviation ' + str(so))
+    # print('Коэффициент -- a %s  ' % round(fp[0], 4))
+    # print('Коэффициент-- b %s  ' % round(fp[1], 4))
+    # print('Коэффициент -- c %s  ' % round(fp[2], 4))
+    # y1 = [fp[0] * x[i] ** 2 + fp[1] * x[i] + fp[2] for i in range(0, len(x))]  # значения функции a*x**2+b*x+c
+    # so = round(sum([abs(y[i] - y1[i]) for i in range(0, len(x))]) / (len(x) * sum(y)) * 100, 4)  # средняя ошибка
+    # print('Average quadratic deviation ' + str(so))
     fx = sp.linspace(x[0], x[-1] + 1, len(x))  # можно установить вместо len(x) большее число для интерполяции\\
     plt.plot(x, y, 'o', label='Original data', markersize=10)
     plt.plot(fx, f(fx), linewidth=2)
@@ -113,41 +113,4 @@ def approximation():
     plt.show()
 
 
-def aprox():
-    x, y = getdata()
-    # настраиваем детали отрисовки графиков
-    plt.figure(figsize=(8, 6))
-    plt.title("Installations")
-    plt.xlabel("Days")
-    plt.ylabel("Installations")
-    # plt.xticks([...], [...]) # можно назначить свои тики
-    plt.autoscale(tight=True)
-
-    # рисуем исходные точки
-    plt.scatter(x, y)
-
-    legend = []
-    # аргументы для построения графиков моделей: исходный интервал + 60 дней
-    fx = sp.linspace(x[0], x[-1] + 60, 1000)
-    for d in range(1, 6):
-        # получаем параметры модели для полинома степени d
-        fp, residuals, rank, sv, rcond = sp.polyfit(x, y, d, full=True)
-        # print("Параметры модели: %s" % fp1)
-        # функция-полином, если её напечатать, то увидите математическое выражение
-        f = sp.poly1d(fp)
-        # print(f)
-        # рисуем график модельной функции
-        plt.plot(fx, f(fx), linewidth=2)
-        legend.append("d=%i" % f.order)
-        f2 = f - 1000  # из полинома можно вычитать
-        t = fsolve(f2, x[-1])  # ищем решение уравнения f2(x)=0, отплясывая от точки x[-1]
-        print("Полином %d-й степени:" % f.order)
-        print("- Мы достигнем 1000 установок через %d дней" % (t[0] - x[-1]))
-        print("- Через 60 дней у нас будет %d установок" % f(x[-1] + 60))
-    plt.legend(legend, loc="upper left")
-    plt.grid()
-    plt.savefig('data.png', dpi=50)
-    plt.show()
-
-
-approximation()
+approximation(2)
