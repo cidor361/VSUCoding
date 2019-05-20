@@ -5,6 +5,7 @@ import numpy as np
 import scipy as sp
 from collections import OrderedDict
 
+from matplotlib import mlab
 from numpy.linalg import linalg
 from scipy.optimize import fsolve
 
@@ -115,68 +116,55 @@ def approximation(d):
     plt.show()
 
 
-def f(x):
-    return 10
-
-
-def MPD(f, a, b):
-    eps = 10e-5
-    while abs(b - a) >= eps:
-        c = (b + a) / 2.0
-        if f == 0:
-            break
-        elif f(a) < 0:
-            b = c
+# Определение функции
+function_f = lambda x: D * np.math.sin(A * x ** B + C)
+# Метод золотого сечения
+def Golden_Section_Method(x_min, x_max, eps):
+    iteration = 1.0
+    print((" {0:.8s} || {1:.5s}  || {2:.8s} || {3:.5s}  || {4:.8s}").format("Итерация", "x_min", "f(x_min)", "x_max", "f(x_max)"))
+    coefficient = (np.math.sqrt(5) - 1) / 2
+    d = x_min + (x_max - x_min) * coefficient
+    c = x_max - (x_max - x_min) * coefficient
+    sc = function_f(c)
+    sd = function_f(d)
+    while (x_max - x_min) > eps:
+        if (sd < sc):
+            x_max = d
+            d = c
+            c = x_max - (x_max - x_min) * coefficient
+            sd = sc
+            sc = function_f(c)
         else:
-            a = c
-        return c
+            x_min = c
+            c = d
+            d = x_min + (x_max - x_min) * coefficient
+            sc = sd
+            sd = function_f(d)
+        iteration += 1
+        print(("     {0:.0f}    || {1:.4f} || {2:.4f}   || {3:.4f} || {4:.4f}").format(iteration - 1, x_min,
+                                                                                       function_f(x_min), x_max,
+                                                                                       function_f(x_max)))
+    # Шаг между точками
+    dx = 0.1
+    # Создадим список координат по оси X на отрезке [-x_min; x_max], включая концы
+    xlist = mlab.frange(x_min, x_max, dx)
+    # Вычислим значение функции в заданных точках
+    ylist = [function_f(x) for x in xlist]
+    # Нарисуем одномерный график
+    plt.plot(xlist, ylist, 'o', color='red')
+    plt.grid(True)
+    # Покажем окно с нарисованным графиком
+    # plt.show()
 
 
-# print(MPD(f, 1, 1000))
-
-
-def
-
-
-#
-#
-# def halfIntervalMethod(f, a, b):
-#     aVal = f(a)
-#     bVal = f(b)
-#     if aVal > 0 and bVal < 0:
-#         return search(f, b, a)
-#     elif aVal < 0 and bVal > 0:
-#         return search(f, a, b)
-#     else:
-#         print("У аргументов не разные знаки")
-#         return 0
-#
-#
-# halfIntervalMethod(f, 1, 2)
-
-
-# def f(x, a, b):
-#     return x ** 2
-#     # return x**a*sin(b*x)
-#
-#
-# def max_of_func_1(f, a, b, eps=1e-5):
-#     while abs(b - a) > eps:
-#         x = (a + b) / 2.0
-#         fx = f(x, a, b)
-#         fa = f(a, a, b)
-#         if (fx < 0 and fa < 0) or (fx > 0 and fa > 0):
-#             a = x
-#         else:
-#             b = x
-#     return x
-#
-#
-# a = 0
-# b = 2
-# x = max_of_func_1(f, 0, 1)
-# print(x)
-# print(f(x, a, b))
-# plt.plot(x, f(x, a, b), 'o')
-# plt.grid(True)
-# plt.show()
+Golden_Section_Method(x_min, x_max, 0.02)
+# Шаг между точками
+dx = 0.1
+# Создадим список координат по оси X на отрезке [-x_min; x_max], включая концы
+xlist = mlab.frange(x_min, x_max, dx)
+# Вычислим значение функции в заданных точках
+ylist = [function_f(x) for x in xlist]
+# Нарисуем одномерный график
+plt.plot(xlist, ylist, 'o', color='blue')
+# Покажем окно с нарисованным графиком
+plt.show()
