@@ -1,3 +1,5 @@
+from re import search
+
 import matplotlib.pyplot as plt
 import numpy as np
 import scipy as sp
@@ -113,4 +115,68 @@ def approximation(d):
     plt.show()
 
 
-approximation(2)
+def f(x):
+    return 10
+
+
+def MPD(f, a, b):
+    eps = 10e-5
+    while abs(b - a) >= eps:
+        c = (b + a) / 2.0
+        if f == 0:
+            break
+        elif f(a) < 0:
+            b = c
+        else:
+            a = c
+        return c
+
+
+# print(MPD(f, 1, 1000))
+
+
+def
+
+
+#
+#
+# def halfIntervalMethod(f, a, b):
+#     aVal = f(a)
+#     bVal = f(b)
+#     if aVal > 0 and bVal < 0:
+#         return search(f, b, a)
+#     elif aVal < 0 and bVal > 0:
+#         return search(f, a, b)
+#     else:
+#         print("У аргументов не разные знаки")
+#         return 0
+#
+#
+# halfIntervalMethod(f, 1, 2)
+
+
+# def f(x, a, b):
+#     return x ** 2
+#     # return x**a*sin(b*x)
+#
+#
+# def max_of_func_1(f, a, b, eps=1e-5):
+#     while abs(b - a) > eps:
+#         x = (a + b) / 2.0
+#         fx = f(x, a, b)
+#         fa = f(a, a, b)
+#         if (fx < 0 and fa < 0) or (fx > 0 and fa > 0):
+#             a = x
+#         else:
+#             b = x
+#     return x
+#
+#
+# a = 0
+# b = 2
+# x = max_of_func_1(f, 0, 1)
+# print(x)
+# print(f(x, a, b))
+# plt.plot(x, f(x, a, b), 'o')
+# plt.grid(True)
+# plt.show()
