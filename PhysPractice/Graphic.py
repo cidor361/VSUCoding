@@ -1,5 +1,6 @@
 from re import search
 
+import math
 import matplotlib.pyplot as plt
 import numpy as np
 import scipy as sp
@@ -116,34 +117,53 @@ def approximation(d):
     plt.show()
 
 
-# Определение функции
-function_f = lambda x: D * np.math.sin(A * x ** B + C)
-# Метод золотого сечения
-def Golden_Section_Method(x_min, x_max, eps):
-    iteration = 1.0
-    print((" {0:.8s} || {1:.5s}  || {2:.8s} || {3:.5s}  || {4:.8s}").format("Итерация", "x_min", "f(x_min)", "x_max", "f(x_max)"))
-    coefficient = (np.math.sqrt(5) - 1) / 2
-    d = x_min + (x_max - x_min) * coefficient
-    c = x_max - (x_max - x_min) * coefficient
-    sc = function_f(c)
-    sd = function_f(d)
-    while (x_max - x_min) > eps:
-        if (sd < sc):
-            x_max = d
-            d = c
-            c = x_max - (x_max - x_min) * coefficient
-            sd = sc
-            sc = function_f(c)
-        else:
-            x_min = c
-            c = d
-            d = x_min + (x_max - x_min) * coefficient
-            sc = sd
-            sd = function_f(d)
-        iteration += 1
-        print(("     {0:.0f}    || {1:.4f} || {2:.4f}   || {3:.4f} || {4:.4f}").format(iteration - 1, x_min,
-                                                                                       function_f(x_min), x_max,
-                                                                                       function_f(x_max)))
+def Golden_Select(x_min, x_max):
+    #Определение переменных
+    A = 1.5; B = 1; C = 3; D = 1.5;
+    # x_min = 2.2
+    # x_max = 4.4
+    # Определение функции
+    function_f = lambda x: D * np.math.sin(A * x ** B + C)
+    # Метод золотого сечения
+    def Golden_Section_Method(x_min, x_max, eps):
+        iteration = 1.0
+        print((" {0:.8s} || {1:.5s}  || {2:.8s} || {3:.5s}  || {4:.8s}").format("Итерация", "x_min", "f(x_min)", "x_max", "f(x_max)"))
+        coefficient = (np.math.sqrt(5) - 1) / 2
+        d = x_min + (x_max - x_min) * coefficient
+        c = x_max - (x_max - x_min) * coefficient
+        sc = function_f(c)
+        sd = function_f(d)
+        while (x_max - x_min) > eps:
+            if (sd < sc):
+                x_max = d
+                d = c
+                c = x_max - (x_max - x_min) * coefficient
+                sd = sc
+                sc = function_f(c)
+            else:
+                x_min = c
+                c = d
+                d = x_min + (x_max - x_min) * coefficient
+                sc = sd
+                sd = function_f(d)
+            iteration += 1
+            print(("     {0:.0f}    || {1:.4f} || {2:.4f}   || {3:.4f} || {4:.4f}").format(iteration - 1, x_min,
+                                                                                           function_f(x_min), x_max,
+                                                                                           function_f(x_max)))
+        # Шаг между точками
+        dx = 0.1
+        # Создадим список координат по оси X на отрезке [-x_min; x_max], включая концы
+        xlist = mlab.frange(x_min, x_max, dx)
+        # Вычислим значение функции в заданных точках
+        ylist = [function_f(x) for x in xlist]
+        # Нарисуем одномерный график
+        plt.plot(xlist, ylist, 'o', color='red')
+        plt.grid(True)
+        # Покажем окно с нарисованным графиком
+        # plt.show()
+
+
+    Golden_Section_Method(x_min, x_max, 0.02)
     # Шаг между точками
     dx = 0.1
     # Создадим список координат по оси X на отрезке [-x_min; x_max], включая концы
@@ -151,20 +171,156 @@ def Golden_Section_Method(x_min, x_max, eps):
     # Вычислим значение функции в заданных точках
     ylist = [function_f(x) for x in xlist]
     # Нарисуем одномерный график
-    plt.plot(xlist, ylist, 'o', color='red')
-    plt.grid(True)
+    plt.plot(xlist, ylist, color='blue')
     # Покажем окно с нарисованным графиком
-    # plt.show()
+    plt.show()
 
 
-Golden_Section_Method(x_min, x_max, 0.02)
-# Шаг между точками
-dx = 0.1
-# Создадим список координат по оси X на отрезке [-x_min; x_max], включая концы
-xlist = mlab.frange(x_min, x_max, dx)
-# Вычислим значение функции в заданных точках
-ylist = [function_f(x) for x in xlist]
-# Нарисуем одномерный график
-plt.plot(xlist, ylist, 'o', color='blue')
-# Покажем окно с нарисованным графиком
-plt.show()
+Golden_Select(0, 10)
+
+
+def fibonacci(fun, Xl, Xr, n, par="max"):
+    def num_Fib(n):
+        terms = [0, 1]
+        i = 2
+        while i <= n:
+            terms.append(terms[i-1]+terms[i-2])
+            i += 1
+        return terms[n]
+
+    EPS = 0.001
+    a = list([0, Xl])
+    b = list([0, Xr])
+    lam = lambda n: (num_Fib(n-2)/num_Fib(n))*(a[k] - b[k]) + a[k]
+    mu = lambda n: (num_Fib(n-1)/num_Fib(n))*(a[k] - b[k]) + a[k]
+    f_lam = lambda k: fun(lam(k))
+    f_mu = lambda k: fun(mu(k))
+    k = 1
+
+    if par == "min":
+        for k in range(1, n):
+            if f_lam(k) > f_mu(k):
+                a.append(lam(k))
+                b.append(b[k])
+                lam_k_plus = mu(k)
+                mu_k_plus = (a[k+1]) + (num_Fib(n-k-1)/num_Fib(n-k))*((b[k+1])-(a[k+1]))
+                if k == (n-2):
+                    # step 5
+                    lam_n = lam(n-1)
+                    mu_n = lam(n) + EPS
+                    if f_lam(n) == f_mu(n):
+                        a_n = lam(n)
+                        b_n = b[n-1]
+                    elif f_lam(n) < f_mu(n):
+                        a_n = a[n-1]
+                        b_n = mu(n)
+                    else:
+                        print("Непредвиденый исход. 1")
+                else:
+                    k += 1
+                    # print("Part 2, Step 3:\n\tf_mu[k] = {}\n\tf_lam[k] = {}".format(f_mu(k), f_lam(k)))
+            else:
+                a.append(a[k])
+                b.append(mu(k))
+                mu_k_plus = lam(k)
+                lam_k_plus = a[k+1] + (num_Fib(n-k-2)/num_Fib(n-k))*(b[k+1] - a[k+1])
+                if k == (n-2):
+                    # step 5
+                    lam_n = lam(n-1)
+                    mu_n = lam(n) + EPS
+                    if f_lam(n) == f_mu(n):
+                        a_n = lam(n)
+                        b_n = b[n-1]
+                    elif f_lam(n) < f_mu(n):
+                        a_n = a[n-1]
+                        b_n = mu(n)
+                    else:
+                        print("Непредвиденый исход. 2")
+                else:
+                    k += 1
+                    # print("Part 2, Step 3:\n\tf_mu[k] = {}\n\tf_lam[k] = {}".format(f_mu(k), f_lam(k)))
+        return a[k], f_mu(k)
+    else:
+        for k in range(1, n):
+            if f_lam(k) < f_mu(k):
+                a.append(lam(k))
+                b.append(b[k])
+                lam_k_plus = mu(k)
+                mu_k_plus = (a[k+1]) + (num_Fib(n-k-1)/num_Fib(n-k))*((b[k+1])-(a[k+1]))
+                if k == (n-2):
+                    # step 5
+                    lam_n = lam(n-1)
+                    mu_n = lam(n) + EPS
+                    if f_lam(n) == f_mu(n):
+                        a_n = lam(n)
+                        b_n = b[n-1]
+                    elif f_lam(n) < f_mu(n):
+                        a_n = a[n-1]
+                        b_n = mu(n)
+                    else:
+                        print("Code: 1")
+                else:
+                    k += 1
+                    # print("Part 2, Step 3:\n\tf_mu[k] = {}\n\tf_lam[k] = {}".format(f_mu(k), f_lam(k)))
+            else:
+                a.append(a[k])
+                b.append(mu(k))
+                mu_k_plus = lam(k)
+                lam_k_plus = a[k+1] + (num_Fib(n-k-2)/num_Fib(n-k))*(b[k+1] - a[k+1])
+                if k == (n-2):
+                    # step 5
+                    lam_n = lam(n-1)
+                    mu_n = lam(n) + EPS
+                    if f_lam(n) == f_mu(n):
+                        a_n = lam(n)
+                        b_n = b[n-1]
+                    elif f_lam(n) < f_mu(n):
+                        a_n = a[n-1]
+                        b_n = mu(n)
+                    else:
+                        print("Code: 2")
+                else:
+                    k += 1
+                    # print("Part 2, Step 3:\n\tf_mu[k] = {}\n\tf_lam[k] = {}".format(f_mu(k), f_lam(k)))
+        return a[k], f_mu(k)
+
+
+def fibonachi(n, Xl, Xr, par):
+    # n = int(input("Кол-во экспериментов: "))
+    # Xl = float(input("Левый предел: "))
+    # Xr = float(input("Правый предел: "))
+    # par = input("max или min:")
+    n = int(n)
+    Xl = float(Xl)
+    Xr = float(Xr)
+    # --------------------------------------------------------------TEST MAX-----------------------------------------------
+    print("----------------------------------------TEST MAX----------------------------------------")
+    first_fun_max = lambda x: (x**Xl)*math.sin(Xr * x)
+    second_fun_max = lambda x: ((math.e ** (Xl * x)) * (math.cos(Xr * x)))
+    third_fun_max = lambda x: (1 - math.fabs(Xl) * (x ** 2)) * math.atan(1 + math.fabs(Xr) * (x ** 2))
+
+    X, F_X = fibonacci(first_fun_max, Xl, Xr, n, "max")
+    print("MAX\n\tf(x) = x^a * sin(bx)\n\tX = {}, F(X) = {}".format(X, F_X))
+
+    X, F_X = fibonacci(second_fun_max, Xl, Xr, n, "max")
+    print("MAX\n\tf(x) = e^ax * cos(bx)\n\tX = {}, F(X) = {}".format(X, F_X))
+
+    X, F_X = fibonacci(third_fun_max, Xl, Xr, n, "max")
+    print("MAX\n\tf(x) = (1 - |a|*x^2) * arctg(1 - |b|*x^2)\n\tX = {}, F(X) = {}".format(X, F_X))
+    # --------------------------------------------------------------TEST MIN-----------------------------------------------
+    print("----------------------------------------TEST MIN----------------------------------------")
+    first_fun_min = lambda x: (x**2) + (Xl * math.e**Xr * x)
+    second_fun_min = lambda x: (x**4) + math.atan(Xr * x)
+    third_fun_min = lambda x: Xr*x + (math.e**(abs(x - Xl)))
+
+    X, F_X = fibonacci(first_fun_min, Xl, Xr, n, "min")
+    print("MIN\n\tf(x) = x**2 + (a * e**b * x)\n\tX = {}, F(X) = {}".format(X, F_X))
+
+    X, F_X = fibonacci(second_fun_min, Xl, Xr, n, "min")
+    print("MIN\n\tf(x) = x**4 + arctg(b * x)\n\tX = {}, F(X) = {}".format(X, F_X))
+
+    # X, F_X = fibonacci(third_fun_min, Xl, Xr, n, "min")
+    # print("MIN\n\tf(x) = b * x + e**(abs(x - a))\n\tX = {}, F(X) = {}".format(X, F_X))
+
+
+# fibonachi(10, 0, 100, 'max')
