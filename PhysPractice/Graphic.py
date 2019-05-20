@@ -176,7 +176,7 @@ def Golden_Select(x_min, x_max):
     plt.show()
 
 
-Golden_Select(0, 10)
+# Golden_Select(0, 10)
 
 
 def fibonacci(fun, Xl, Xr, n, par="max"):
@@ -324,3 +324,68 @@ def fibonachi(n, Xl, Xr, par):
 
 
 # fibonachi(10, 0, 100, 'max')
+
+
+def dichotom(EPS, Xl, Xr, par):
+    # EPS = float(input("Погрешность: "))
+    # Xl = float(input("Левый предел: "))
+    # Xr = float(input("Правый предел: "))
+    # par = input("max или min:")
+    EPS = float(EPS)
+    Xl = float(Xl)
+    Xr = float(Xr)
+    def dichotomy(fun, X_left, X_right, EPS, par="max"):
+        a = float(X_left)
+        b = float(X_right)
+        n = 0  # Проведенное кол-во итераций
+        c = 0
+        while (abs(b) - abs(a)) > EPS:
+            n += 1
+            c = (b + a) / 2
+            if par.lower() == "max":
+                if fun(c-EPS) > fun(c+EPS):
+                    b = c
+                else:
+                    a = c
+            else:
+                if fun(c-EPS) < fun(c+EPS):
+                    b = c
+                else:
+                    a = c
+            # print("n: {}, a: {}, b: {}".format(n, a, b))
+        return c, fun(c)
+
+
+    # --------------------------------------------------------------TEST MAX-----------------------------------------------
+    print("----------------------------------------TEST MAX----------------------------------------")
+    first_fun_max = lambda x: (x**Xl)*math.sin(Xr * x)
+    second_fun_max = lambda x: ((math.e ** (Xl * x)) * (math.cos(Xr * x)))
+    third_fun_max = lambda x: (1 - math.fabs(Xl) * (x ** 2)) * math.atan(1 + math.fabs(Xr) * (x ** 2))
+
+    x_nm, y_nm = dichotomy(first_fun_max, Xl, Xr, EPS)
+    print("MAX\n\tf(x) = x^a * sin(bx)\n\tx_nm: {}, y_nm: {}, EPS: {}".format(x_nm, y_nm, EPS))
+
+    x_nm, y_nm = dichotomy(second_fun_max, Xl, Xr, EPS)
+    print("MAX\n\tf(x) = e^ax * cos(bx)\n\tx_nm: {}, y_nm: {}, EPS: {}".format(x_nm, y_nm, EPS))
+
+    x_nm, y_nm = dichotomy(third_fun_max, Xl, Xr, EPS)
+    print("MAX\n\tf(x) = (1 - |a|*x^2) * arctg(1 - |b|*x^2)\n\tx_nm: {}, y_nm: {}, EPS: {}".format(x_nm, y_nm, EPS))
+
+
+    # --------------------------------------------------------------TEST MIN-----------------------------------------------
+    print("----------------------------------------TEST MIN----------------------------------------")
+    first_fun_min = lambda x: (x**2) + (Xl * (math.e**Xr) * x)
+    second_fun_min = lambda x: (x**4) + math.atan(Xr * x)
+    third_fun_min = lambda x: Xr*x + (math.e**(abs(x - Xl)))
+
+    x_nm, y_nm = dichotomy(first_fun_min, Xl, Xr, EPS, "min")
+    print("MIN\n\tf(x) = x**2 + (a * e**b * x)\n\tx_nm: {}, y_nm: {}, EPS: {}".format(x_nm, y_nm, EPS))
+
+    x_nm, y_nm = dichotomy(second_fun_min, Xl, Xr, EPS, "min")
+    print("MIN\n\tf(x) = x**4 + arctg(b * x)\n\tx_nm: {}, y_nm: {}, EPS: {}".format(x_nm, y_nm, EPS))
+
+    # x_nm, y_nm = dichotomy(third_fun_min, Xl, Xr, EPS, "min")
+    # print("MIN\n\tf(x) = b * x + e**(abs(x - a))\n\tx_nm: {}, y_nm: {}, EPS: {}".format(x_nm, y_nm, EPS))
+
+
+dichotom(0.1, 0, 10, 'max')
