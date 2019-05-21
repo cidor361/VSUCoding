@@ -1,14 +1,9 @@
-from re import search
-
+from collections import OrderedDict
 import math
 import matplotlib.pyplot as plt
 import numpy as np
 import scipy as sp
-from collections import OrderedDict
-
 from matplotlib import mlab
-from numpy.linalg import linalg
-from scipy.optimize import fsolve
 
 
 def cleanstring(string):
@@ -179,112 +174,6 @@ def Golden_Select(x_min, x_max):
 # Golden_Select(0, 10)
 
 
-def fibonacci(fun, Xl, Xr, n, par="max"):
-    def num_Fib(n):
-        terms = [0, 1]
-        i = 2
-        while i <= n:
-            terms.append(terms[i-1]+terms[i-2])
-            i += 1
-        return terms[n]
-
-    EPS = 0.001
-    a = list([0, Xl])
-    b = list([0, Xr])
-    lam = lambda n: (num_Fib(n-2)/num_Fib(n))*(a[k] - b[k]) + a[k]
-    mu = lambda n: (num_Fib(n-1)/num_Fib(n))*(a[k] - b[k]) + a[k]
-    f_lam = lambda k: fun(lam(k))
-    f_mu = lambda k: fun(mu(k))
-    k = 1
-
-    if par == "min":
-        for k in range(1, n):
-            if f_lam(k) > f_mu(k):
-                a.append(lam(k))
-                b.append(b[k])
-                lam_k_plus = mu(k)
-                mu_k_plus = (a[k+1]) + (num_Fib(n-k-1)/num_Fib(n-k))*((b[k+1])-(a[k+1]))
-                if k == (n-2):
-                    # step 5
-                    lam_n = lam(n-1)
-                    mu_n = lam(n) + EPS
-                    if f_lam(n) == f_mu(n):
-                        a_n = lam(n)
-                        b_n = b[n-1]
-                    elif f_lam(n) < f_mu(n):
-                        a_n = a[n-1]
-                        b_n = mu(n)
-                    else:
-                        print("Непредвиденый исход. 1")
-                else:
-                    k += 1
-                    # print("Part 2, Step 3:\n\tf_mu[k] = {}\n\tf_lam[k] = {}".format(f_mu(k), f_lam(k)))
-            else:
-                a.append(a[k])
-                b.append(mu(k))
-                mu_k_plus = lam(k)
-                lam_k_plus = a[k+1] + (num_Fib(n-k-2)/num_Fib(n-k))*(b[k+1] - a[k+1])
-                if k == (n-2):
-                    # step 5
-                    lam_n = lam(n-1)
-                    mu_n = lam(n) + EPS
-                    if f_lam(n) == f_mu(n):
-                        a_n = lam(n)
-                        b_n = b[n-1]
-                    elif f_lam(n) < f_mu(n):
-                        a_n = a[n-1]
-                        b_n = mu(n)
-                    else:
-                        print("Непредвиденый исход. 2")
-                else:
-                    k += 1
-                    # print("Part 2, Step 3:\n\tf_mu[k] = {}\n\tf_lam[k] = {}".format(f_mu(k), f_lam(k)))
-        return a[k], f_mu(k)
-    else:
-        for k in range(1, n):
-            if f_lam(k) < f_mu(k):
-                a.append(lam(k))
-                b.append(b[k])
-                lam_k_plus = mu(k)
-                mu_k_plus = (a[k+1]) + (num_Fib(n-k-1)/num_Fib(n-k))*((b[k+1])-(a[k+1]))
-                if k == (n-2):
-                    # step 5
-                    lam_n = lam(n-1)
-                    mu_n = lam(n) + EPS
-                    if f_lam(n) == f_mu(n):
-                        a_n = lam(n)
-                        b_n = b[n-1]
-                    elif f_lam(n) < f_mu(n):
-                        a_n = a[n-1]
-                        b_n = mu(n)
-                    else:
-                        print("Code: 1")
-                else:
-                    k += 1
-                    # print("Part 2, Step 3:\n\tf_mu[k] = {}\n\tf_lam[k] = {}".format(f_mu(k), f_lam(k)))
-            else:
-                a.append(a[k])
-                b.append(mu(k))
-                mu_k_plus = lam(k)
-                lam_k_plus = a[k+1] + (num_Fib(n-k-2)/num_Fib(n-k))*(b[k+1] - a[k+1])
-                if k == (n-2):
-                    # step 5
-                    lam_n = lam(n-1)
-                    mu_n = lam(n) + EPS
-                    if f_lam(n) == f_mu(n):
-                        a_n = lam(n)
-                        b_n = b[n-1]
-                    elif f_lam(n) < f_mu(n):
-                        a_n = a[n-1]
-                        b_n = mu(n)
-                    else:
-                        print("Code: 2")
-                else:
-                    k += 1
-                    # print("Part 2, Step 3:\n\tf_mu[k] = {}\n\tf_lam[k] = {}".format(f_mu(k), f_lam(k)))
-        return a[k], f_mu(k)
-
-
 def fibonachi(n, Xl, Xr, par):
     # n = int(input("Кол-во экспериментов: "))
     # Xl = float(input("Левый предел: "))
@@ -293,6 +182,112 @@ def fibonachi(n, Xl, Xr, par):
     n = int(n)
     Xl = float(Xl)
     Xr = float(Xr)
+
+    def fibonacci(fun, Xl, Xr, n, par="max"):
+        def num_Fib(n):
+            terms = [0, 1]
+            i = 2
+            while i <= n:
+                terms.append(terms[i - 1] + terms[i - 2])
+                i += 1
+            return terms[n]
+
+        EPS = 0.001
+        a = list([0, Xl])
+        b = list([0, Xr])
+        lam = lambda n: (num_Fib(n - 2) / num_Fib(n)) * (a[k] - b[k]) + a[k]
+        mu = lambda n: (num_Fib(n - 1) / num_Fib(n)) * (a[k] - b[k]) + a[k]
+        f_lam = lambda k: fun(lam(k))
+        f_mu = lambda k: fun(mu(k))
+        k = 1
+
+        if par == "min":
+            for k in range(1, n):
+                if f_lam(k) > f_mu(k):
+                    a.append(lam(k))
+                    b.append(b[k])
+                    lam_k_plus = mu(k)
+                    mu_k_plus = (a[k + 1]) + (num_Fib(n - k - 1) / num_Fib(n - k)) * ((b[k + 1]) - (a[k + 1]))
+                    if k == (n - 2):
+                        # step 5
+                        lam_n = lam(n - 1)
+                        mu_n = lam(n) + EPS
+                        if f_lam(n) == f_mu(n):
+                            a_n = lam(n)
+                            b_n = b[n - 1]
+                        elif f_lam(n) < f_mu(n):
+                            a_n = a[n - 1]
+                            b_n = mu(n)
+                        else:
+                            print("Непредвиденый исход. 1")
+                    else:
+                        k += 1
+                        # print("Part 2, Step 3:\n\tf_mu[k] = {}\n\tf_lam[k] = {}".format(f_mu(k), f_lam(k)))
+                else:
+                    a.append(a[k])
+                    b.append(mu(k))
+                    mu_k_plus = lam(k)
+                    lam_k_plus = a[k + 1] + (num_Fib(n - k - 2) / num_Fib(n - k)) * (b[k + 1] - a[k + 1])
+                    if k == (n - 2):
+                        # step 5
+                        lam_n = lam(n - 1)
+                        mu_n = lam(n) + EPS
+                        if f_lam(n) == f_mu(n):
+                            a_n = lam(n)
+                            b_n = b[n - 1]
+                        elif f_lam(n) < f_mu(n):
+                            a_n = a[n - 1]
+                            b_n = mu(n)
+                        else:
+                            print("Непредвиденый исход. 2")
+                    else:
+                        k += 1
+                        # print("Part 2, Step 3:\n\tf_mu[k] = {}\n\tf_lam[k] = {}".format(f_mu(k), f_lam(k)))
+            return a[k], f_mu(k)
+        else:
+            for k in range(1, n):
+                if f_lam(k) < f_mu(k):
+                    a.append(lam(k))
+                    b.append(b[k])
+                    lam_k_plus = mu(k)
+                    mu_k_plus = (a[k + 1]) + (num_Fib(n - k - 1) / num_Fib(n - k)) * ((b[k + 1]) - (a[k + 1]))
+                    if k == (n - 2):
+                        # step 5
+                        lam_n = lam(n - 1)
+                        mu_n = lam(n) + EPS
+                        if f_lam(n) == f_mu(n):
+                            a_n = lam(n)
+                            b_n = b[n - 1]
+                        elif f_lam(n) < f_mu(n):
+                            a_n = a[n - 1]
+                            b_n = mu(n)
+                        else:
+                            print("Code: 1")
+                    else:
+                        k += 1
+                        # print("Part 2, Step 3:\n\tf_mu[k] = {}\n\tf_lam[k] = {}".format(f_mu(k), f_lam(k)))
+                else:
+                    a.append(a[k])
+                    b.append(mu(k))
+                    mu_k_plus = lam(k)
+                    lam_k_plus = a[k + 1] + (num_Fib(n - k - 2) / num_Fib(n - k)) * (b[k + 1] - a[k + 1])
+                    if k == (n - 2):
+                        # step 5
+                        lam_n = lam(n - 1)
+                        mu_n = lam(n) + EPS
+                        if f_lam(n) == f_mu(n):
+                            a_n = lam(n)
+                            b_n = b[n - 1]
+                        elif f_lam(n) < f_mu(n):
+                            a_n = a[n - 1]
+                            b_n = mu(n)
+                        else:
+                            print("Code: 2")
+                    else:
+                        k += 1
+                        # print("Part 2, Step 3:\n\tf_mu[k] = {}\n\tf_lam[k] = {}".format(f_mu(k), f_lam(k)))
+            return a[k], f_mu(k)
+
     # --------------------------------------------------------------TEST MAX-----------------------------------------------
     print("----------------------------------------TEST MAX----------------------------------------")
     first_fun_max = lambda x: (x**Xl)*math.sin(Xr * x)
@@ -388,4 +383,4 @@ def dichotom(EPS, Xl, Xr, par):
     # print("MIN\n\tf(x) = b * x + e**(abs(x - a))\n\tx_nm: {}, y_nm: {}, EPS: {}".format(x_nm, y_nm, EPS))
 
 
-dichotom(0.1, 0, 10, 'max')
+# dichotom(0.1, 0, 10, 'max')
