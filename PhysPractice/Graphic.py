@@ -318,7 +318,7 @@ def fibonachi(n, Xl, Xr, par):
     # print("MIN\n\tf(x) = b * x + e**(abs(x - a))\n\tX = {}, F(X) = {}".format(X, F_X))
 
 
-# fibonachi(10, 0, 100, 'max')
+fibonachi(10, 0, 100, 'max')
 
 
 def dichotom(EPS, Xl, Xr, par):
@@ -383,4 +383,4 @@ def dichotom(EPS, Xl, Xr, par):
     # print("MIN\n\tf(x) = b * x + e**(abs(x - a))\n\tx_nm: {}, y_nm: {}, EPS: {}".format(x_nm, y_nm, EPS))
 
 
-# dichotom(0.1, 0, 10, 'max')
+dichotom(0.1, 0, 10, 'min')

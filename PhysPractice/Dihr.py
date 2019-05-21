@@ -17,9 +17,9 @@ function_fun.append(lambda x: (1 - math.fabs(xmin) * (x ** 2)) * math.atan(1 + m
 
 
 # Метод поперечного сечения
-def Half_Division_Method(xmin, xmax):
+def Half_Division_Method(xmin, xmax, eps):
 
-    while (abs((xmin - xmax)) > 0.02):
+    while (abs((xmin - xmax)) > eps):
         middle_point = (xmin + xmax) / 2
         if (f(middle_point + 0.01) > f(middle_point - 0.01)):
             print("{0:.4f} || {1:.4f} || Правый".format(middle_point, f(middle_point)))
@@ -34,7 +34,7 @@ def Half_Division_Method(xmin, xmax):
 i = 0
 for i in range(3):
     f = function_fun[i]
-    Half_Division_Method(xmin, xmax)
+    Half_Division_Method(xmin, xmax, 0.01)
     i += 1
 
 # Шаг между точками
@@ -51,4 +51,4 @@ pylab.plot(xlist, ylist)
 plt.grid(True)
 
 # Покажем окно с нарисованным графиком
-pylab.show()
+# pylab.show()

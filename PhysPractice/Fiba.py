@@ -10,9 +10,10 @@ x_max = 4.4
 number_of_iterations = 10
 
 # Определение функции
-function_f = lambda x: (x**x_min)*math.sin(x_max * x)
-# function_f = lambda x: ((math.e ** (x_min * x)) * (math.cos(x_max * x)))
-# function_f = lambda x: (1 - math.fabs(x_min) * (x ** 2)) * math.atan(1 + math.fabs(x_max) * (x ** 2))
+function_fun = []
+function_fun.append(lambda x: (x ** x_min) * math.sin(x_max * x))
+function_fun.append(lambda x: ((math.e ** (x_min * x)) * (math.cos(x_max * x))))
+function_fun.append(lambda x: (1 - math.fabs(x_min) * (x ** 2)) * math.atan(1 + math.fabs(x_max) * (x ** 2)))
 
 # number_of_iterations = int(input(" Введите количество итераций: "))
 
@@ -45,7 +46,11 @@ def Fibonacci_Method(x_min, x_max, iteration=0):
         Fibonacci_Method(x_min, x_rhs, iteration + 1)
 
 
-Fibonacci_Method(x_min, x_max)
+i = 0
+for i in range(3):
+    function_f = function_fun[i]
+    Fibonacci_Method(x_min, x_max)
+    i += 1
 
 # Шаг между точками
 increment = 0.01

@@ -3,13 +3,13 @@ import pylab
 import matplotlib.pyplot as plt
 from matplotlib import mlab
 #Определение переменных
-# A = 1.5; B = 1; C = 3; D = 1.5;
 x_min = 2.2
 x_max = 4.4
 # Определение функции
-function_f = lambda x: (x ** x_min) * math.sin(x_max * x)
-# function_f = lambda x: ((math.e ** (x_min * x)) * (math.cos(x_max * x)))
-# function_f = lambda x: (1 - math.fabs(x_min) * (x ** 2)) * math.atan(1 + math.fabs(x_max) * (x ** 2))
+function_fun = []
+function_fun.append(lambda x: (x ** x_min) * math.sin(x_max * x))
+function_fun.append(lambda x: ((math.e ** (x_min * x)) * (math.cos(x_max * x))))
+function_fun.append(lambda x: (1 - math.fabs(x_min) * (x ** 2)) * math.atan(1 + math.fabs(x_max) * (x ** 2)))
 # Метод золотого сечения
 def Golden_Section_Method(x_min, x_max, eps):
     iteration = 1.0
@@ -38,8 +38,11 @@ def Golden_Section_Method(x_min, x_max, eps):
         print(("     {0:.0f}    || {1:.4f} || {2:.4f}   || {3:.4f} || {4:.4f}").format(iteration - 1, x_min,
                                                                                        function_f(x_min), x_max,
                                                                                        function_f(x_max)))
-
-Golden_Section_Method(x_min, x_max, 0.02)
+i = 0
+for i in range(3):
+    function_f = function_fun[i]
+    Golden_Section_Method(x_min, x_max, 0.02)
+    i += 1
 
 # Шаг между точками
 dx = 0.1
