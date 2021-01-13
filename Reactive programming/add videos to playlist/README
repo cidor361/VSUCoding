@@ -1,0 +1,13 @@
+Prerequisites
+ * Python 3.8 (3.9)
+ * The pip package management tool
+ * The Google APIs Client Library for Python (pip install --upgrade google-api-python-client)
+ * The google-auth, google-auth-oauthlib, and google-auth-httplib2 for user authorization
+ (pip install --upgrade google-auth google-auth-oauthlib google-auth-httplib2)
+
+Get credentials to access google api
+ 1 Create a project in the API Console and set up credentials for a web application. Set the authorized redirect URIs as appropriate.
+ 2 Save the client_secrets.json file associated with your credentials to a local file.
+ 3 Copy the full code sample to a local file in the same directory as the client_secrets.json file (or modify the sample to correctly identify that file's location.
+ 4 Run the sample
+
